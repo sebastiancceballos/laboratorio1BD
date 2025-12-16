@@ -134,3 +134,25 @@ def estadisticas_por_dominio(db: Session) -> dict:
     result = db.execute(query).fetchall()
 
     return {row.dominio: row.total for row in result} 
+
+## Se crea la query la cual calcula estadisticas de la edad
+def estadisticas_edad(db: Session) -> dict:
+    """
+    Retorna estadísticas de edad (min, max, promedio).
+    """
+    query = text("""
+        SELECT
+            MIN(TIMESTAMPDIFF(YEAR, birth_date, CURDATE())) AS edad_min,
+            MAX(TIMESTAMPDIFF(YEAR, birth_date, CURDATE())) AS edad_max,
+            ROUND(AVG(TIMESTAMPDIFF(YEAR, birth_date, CURDATE())), 1) AS edad_promedio
+        FROM personas
+        WHERE birth_date IS NOT NULL
+    """)
+
+    result = db.execute(query).first()
+
+    return {
+        "edad_minima": result.edad_min,
+        "edad_maxima": result.edad_max,
+        "edad_promedio": result.edad_promedio
+    }
