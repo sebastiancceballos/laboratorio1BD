@@ -86,7 +86,7 @@ def delete_persona(db: Session, persona_id: int) -> None:
 faker=Faker("es_Co")
 
 def populate_personas(db: Session, cantidad: int) -> int:
-    if cantidad <=0 or > 100:
+    if cantidad <=0 or cantidad > 1000:
         raise ValueError("Cantidad invalida")
 
     dominios=["gmail.com", "outlook.com", "hotmail.com"]
@@ -98,10 +98,10 @@ def populate_personas(db: Session, cantidad: int) -> int:
 
     persona=persona(
 
-        email=f"{first_name.lower()}.{last_name.lower()}{random.randint(1,9999)}@{random.choice(dominios)}"
-        phone=faker.phone_number()
-        birth_date=faker.date_of_birth(minimum_age=18, maximum_age=90)
-        is_active=faker.choice([True, False])
+        email=f"{first_name.lower()}.{last_name.lower()}{random.randint(1,9999)}@{random.choice(dominios)}",
+        phone=faker.phone_number(),
+        birth_date=faker.date_of_birth(minimum_age=18, maximum_age=90),
+        is_active=faker.choice([True, False]),
         notes=faker.sentence() if random.choice([True, False]) else None,
     
     )
