@@ -12,6 +12,9 @@ from fastapi import HTTPException
 ## Se importa  esquema de los datos a retornar
 from ..views.persona import poblarRequest
 
+##Se importa la funcion reset_personas
+from ..services.persona_service import reset_personas
+
 router = APIRouter(prefix="/personas", tags=["personas"])
 
 
@@ -44,6 +47,16 @@ def update_persona(persona_id: int, persona_in: PersonaUpdate, db: Session = Dep
     return persona_service.update_persona(db, persona_id, persona_in)
 
 
+
+## Nueva ruta para resetear personas
+@router.delete("/reset")
+def borrar_todas_las_personas(db: Session = Depends(get_db)):
+    total = reset_personas(db)
+    return {
+        "mensaje": "Todas las personas fueron eliminadas",
+        "total_eliminadas": total
+    }
+
 @router.delete("/{persona_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_persona(persona_id: int, db: Session = Depends(get_db)):
     """Delete a Persona by ID via service layer."""
@@ -56,3 +69,4 @@ def delete_persona(persona_id: int, db: Session = Depends(get_db)):
 def poblar_personas(payload: poblarRequest, db: Session = Depends(get_db)):
     total = populate_personas(db, payload.cantidad)
     return {"message": f"{total} personas creadas exitosamente"}
+
