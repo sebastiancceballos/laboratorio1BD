@@ -85,29 +85,24 @@ def delete_persona(db: Session, persona_id: int) -> None:
 ## Funcion para poblar la base de datos con datos falsos
 faker=Faker("es_Co")
 
-def populate_personas(db: Session, cantidad: int) -> int:
-    if cantidad <=0 or cantidad > 1000:
-        raise ValueError("Cantidad invalida")
-
-    dominios=["gmail.com", "outlook.com", "hotmail.com"]
-    personas =[]
+def populate_personas(db, cantidad: int):
+    dominios = ["gmail.com", "hotmail.com", "outlook.com"]
 
     for _ in range(cantidad):
-        first_name=faker.first_name()
-        last_name=faker.last_name()
+        first_name = faker.first_name() or faker.first_name_male()
+        last_name = faker.last_name() or faker.last_name_male()
 
-    persona=persona(
+        persona = Persona(
+            first_name=first_name,
+            last_name=last_name,
+            email=f"{first_name.lower()}.{last_name.lower()}.{faker.uuid4()}@{random.choice(dominios)}",
+            phone=faker.phone_number(),
+            birth_date=faker.date_of_birth(minimum_age=18, maximum_age=85),
+            is_active=random.choice([True, False]),
+            notes=faker.sentence() if random.choice([True, False]) else None,
+        )
 
-        email=f"{first_name.lower()}.{last_name.lower()}{random.randint(1,9999)}@{random.choice(dominios)}",
-        phone=faker.phone_number(),
-        birth_date=faker.date_of_birth(minimum_age=18, maximum_age=90),
-        is_active=faker.choice([True, False]),
-        notes=faker.sentence() if random.choice([True, False]) else None,
-    
-    )
-        
-    personas.append(persona)
-    
-    db.add_all(personas)
+        db.add(persona)
+
     db.commit()
-
+    return cantidad
