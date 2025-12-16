@@ -9,7 +9,7 @@ from ..services import persona_service
 from ..services.persona_service import populate_personas
 from fastapi import HTTPException
 
-## Se importa un esquema de los datos a retornar
+## Se importa  esquema de los datos a retornar
 from ..views.persona import poblarRequest
 
 router = APIRouter(prefix="/personas", tags=["personas"])
