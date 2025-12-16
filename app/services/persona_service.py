@@ -1,3 +1,4 @@
+import email
 from typing import Sequence
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -5,6 +6,10 @@ from sqlalchemy.exc import IntegrityError
 from ..models.persona import Persona
 from ..views.persona import PersonaCreate, PersonaUpdate
 from .errors import PersonaNotFoundError, EmailAlreadyExistsError
+
+##Se importa libreria faker y se importa random
+from faker import Faker
+import random
 
 
 def create_persona(db: Session, payload: PersonaCreate) -> Persona:
@@ -76,3 +81,33 @@ def delete_persona(db: Session, persona_id: int) -> None:
         raise PersonaNotFoundError()
     db.delete(obj)
     db.commit()
+
+## Funcion para poblar la base de datos con datos falsos
+faker=Faker("es_Co")
+
+def populate_personas(db: Session, cantidad: int) -> int:
+    if cantidad <=0 or > 100:
+        raise ValueError("Cantidad invalida")
+
+    dominios=["gmail.com", "outlook.com", "hotmail.com"]
+    personas =[]
+
+    for _ in range(cantidad):
+        first_name=faker.first_name()
+        last_name=faker.last_name()
+
+    persona=persona(
+
+        email=f"{first_name.lower()}.{last_name.lower()}{random.randint(1,9999)}@{random.choice(dominios)}"
+        phone=faker.phone_number()
+        birth_date=faker.date_of_birth(minimum_age=18, maximum_age=90)
+        is_active=faker.choice([True, False])
+        notes=faker.sentence() if random.choice([True, False]) else None,
+    
+    )
+        
+    personas.append(persona)
+    
+    db.add_all(personas)
+    db.commit()
+
