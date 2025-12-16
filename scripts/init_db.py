@@ -17,7 +17,7 @@ user = parsed.username or "root"
 password = parsed.password or ""
 host = parsed.hostname or "localhost"
 port = int(parsed.port or 3306)
-db_name = parsed.path.lstrip("/") or "fastapi_demo"
+db_name = parsed.path.lstrip("/") or "lb_bd"
 
 # Connect without selecting a DB and create if not exists
 conn = pymysql.connect(host=host, user=user, password=password, port=port, cursorclass=pymysql.cursors.Cursor, autocommit=True)
