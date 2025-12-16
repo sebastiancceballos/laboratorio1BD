@@ -5,6 +5,12 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..views.persona import PersonaCreate, PersonaUpdate, PersonaRead
 from ..services import persona_service
+## Se importa la funcion populate_personas de persona_service y la libreria HTTPException
+from ..services.persona_service import populate_personas
+from fastapi import HTTPException
+
+## Se importa un esquema de los datos a retornar
+from ..views.persona import poblarRequest
 
 router = APIRouter(prefix="/personas", tags=["personas"])
 
@@ -43,3 +49,10 @@ def delete_persona(persona_id: int, db: Session = Depends(get_db)):
     """Delete a Persona by ID via service layer."""
     persona_service.delete_persona(db, persona_id)
     return None
+
+
+## Nueva ruta para poblar personas
+@router.post("/poblar", status_code=201)
+def poblar_personas(payload: poblarRequest, db: Session = Depends(get_db)):
+    total = populate_personas(db, payload.cantidad)
+    return {"message": f"{total} personas creadas exitosamente"}
