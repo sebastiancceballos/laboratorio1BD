@@ -1,6 +1,10 @@
 from datetime import date, datetime
 from pydantic import BaseModel, Field, EmailStr
 
+##Se importan las librerias necesarias pydantic 
+from pydantic import BaseModel, Field
+
+
 
 class PersonaBase(BaseModel):
     """Shared attributes for Persona inputs."""
@@ -42,3 +46,12 @@ class PersonaRead(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class poblarRequest(BaseModel):
+    cantidad: int = Field(
+        
+        gt=0,
+        le=1000,
+        description="Número de personas a crear (1-1000)"
+    )
