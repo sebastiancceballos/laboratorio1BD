@@ -114,6 +114,6 @@ def reset_personas(db: Session) -> int:
     """Eliminar todos los registros de la tabla personas.
         Retorna el número de registros eliminados. 
     """
-    result = db.execute(text("DELETE FROM persona"))
+    result = db.execute(text("DELETE FROM personas"))
     db.commit()
     return result.rowcount
