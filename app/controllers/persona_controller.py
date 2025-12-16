@@ -15,6 +15,10 @@ from ..views.persona import poblarRequest
 ##Se importa la funcion reset_personas
 from ..services.persona_service import reset_personas
 
+##Se importa la funcion estadisticas_por_dominio
+from ..services.persona_service import estadisticas_por_dominio
+
+
 router = APIRouter(prefix="/personas", tags=["personas"])
 
 
@@ -69,4 +73,13 @@ def delete_persona(persona_id: int, db: Session = Depends(get_db)):
 def poblar_personas(payload: poblarRequest, db: Session = Depends(get_db)):
     total = populate_personas(db, payload.cantidad)
     return {"message": f"{total} personas creadas exitosamente"}
+
+## Nueva ruta para obtener estadisticas por dominio
+@router.get("/estadisticas/dominios")
+def estadisticas_dominios(db: Session = Depends(get_db)):
+    """
+    Retorna estadísticas de personas por dominio de correo.
+    """
+    return estadisticas_por_dominio(db)
+
 
