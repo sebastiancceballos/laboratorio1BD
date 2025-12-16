@@ -11,6 +11,8 @@ from .errors import PersonaNotFoundError, EmailAlreadyExistsError
 from faker import Faker
 import random
 
+## Se importa la libreria sqlalchemy text
+from sqlalchemy import text
 
 def create_persona(db: Session, payload: PersonaCreate) -> Persona:
     """Create a Persona ensuring unique email."""
@@ -106,3 +108,12 @@ def populate_personas(db, cantidad: int):
 
     db.commit()
     return cantidad
+
+##Se crea la funcion reset_personas la cual elimina todos los registros de la tabla personas
+def reset_personas(db: Session) -> int:
+    """Eliminar todos los registros de la tabla personas.
+        Retorna el número de registros eliminados. 
+    """
+    result = db.execute(text("DELETE FROM persona"))
+    db.commit()
+    return result.rowcount
