@@ -53,7 +53,7 @@ def update_persona(persona_id: int, persona_in: PersonaUpdate, db: Session = Dep
 def borrar_todas_las_personas(db: Session = Depends(get_db)):
     total = reset_personas(db)
     return {
-        "mensaje": "Todas las personas fueron eliminadas",
+        "mensaje": "Base de datos limpiada. Se eliminaron todos los registros.",
         "total_eliminadas": total
     }
 
