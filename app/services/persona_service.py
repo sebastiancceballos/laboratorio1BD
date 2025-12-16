@@ -117,3 +117,20 @@ def reset_personas(db: Session) -> int:
     result = db.execute(text("DELETE FROM personas"))
     db.commit()
     return result.rowcount
+
+## Se crea una funcion la cual retorna cuantas personas hay por dominio de correo
+def estadisticas_por_dominio(db: Session) -> dict:
+    """
+    Retorna la cantidad de personas agrupadas por dominio de correo.
+    """
+    query = text("""
+        SELECT
+            SUBSTRING_INDEX(email, '@', -1) AS dominio,
+            COUNT(*) AS total
+        FROM personas
+        GROUP BY dominio
+    """)
+
+    result = db.execute(query).fetchall()
+
+    return {row.dominio: row.total for row in result} 
