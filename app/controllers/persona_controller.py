@@ -18,8 +18,12 @@ from ..services.persona_service import reset_personas
 ##Se importa la funcion estadisticas_por_dominio
 from ..services.persona_service import estadisticas_por_dominio
 
-#Se importa la funcion estadistica_por_edad
+##Se importa la funcion estadistica_por_edad
 from ..services.persona_service import estadisticas_edad
+
+##Se importa la funcion buscar_personas
+from ..services.persona_service import buscar_personas
+
 
 
 router = APIRouter(prefix="/personas", tags=["personas"])
@@ -93,3 +97,15 @@ def estadisticas_por_edad(db: Session = Depends(get_db)):
     Retorna estadísticas de edad calculadas desde birth_date.
     """
     return estadisticas_edad(db)
+
+
+##nueva ruta para buscar personas
+@router.get("/buscar/{termino}")
+def buscador_general(
+    termino: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Busca personas por nombre, apellido o email.
+    """
+    return buscar_personas(db, termino)
