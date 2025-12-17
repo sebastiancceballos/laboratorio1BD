@@ -5,6 +5,9 @@ from .controllers import persona_controller
 from .error_handlers import register_exception_handlers
 
 
+
+
+
 def create_app() -> FastAPI:
     """Application factory."""
     app = FastAPI(title="FastAPI Persona CRUD (MySQL)", version="1.0.0")
@@ -21,8 +24,14 @@ def create_app() -> FastAPI:
     def health() -> dict:
         return {"status": "ok"}
 
-    app.include_router(persona_controller.router)
+    app.include_router(
+    persona_controller.router,
+    prefix="/personas",
+    tags=["Personas"]
+)
+
     return app
+
 
 
 app = create_app()
