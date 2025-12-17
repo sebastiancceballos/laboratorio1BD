@@ -14,6 +14,12 @@ import random
 ## Se importa la libreria sqlalchemy text
 from sqlalchemy import text
 
+##se importa la libreria sqllchemy or, funcion Persona y libreria typing 
+from sqlalchemy import or_
+from ..models.persona import Persona
+from typing import Sequence
+
+
 def create_persona(db: Session, payload: PersonaCreate) -> Persona:
     """Create a Persona ensuring unique email."""
     # Optimistic check; DB unique constraint is the final guard
@@ -156,3 +162,23 @@ def estadisticas_edad(db: Session) -> dict:
         "edad_maxima": result.edad_max,
         "edad_promedio": result.edad_promedio
     }
+
+
+## Nueva funcion para buscar personas por nombre, apellido o email
+def buscar_personas(db: Session, termino: str) -> Sequence[Persona]:
+    """
+    Busca personas por first_name, last_name o email.
+    """
+    patron = f"%{termino}%"
+
+    return (
+        db.query(Persona)
+        .filter(
+            or_(
+                Persona.first_name.ilike(patron),
+                Persona.last_name.ilike(patron),
+                Persona.email.ilike(patron),
+            )
+        )
+        .all()
+    )
