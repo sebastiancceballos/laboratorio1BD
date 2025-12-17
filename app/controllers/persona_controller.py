@@ -22,7 +22,7 @@ from ..services.persona_service import estadisticas_por_dominio
 from ..services.persona_service import estadisticas_edad
 
 ##Se importa la funcion buscar_personas
-from ..services.persona_service import buscar_personas
+from ..services.persona_service import search_personas
 
 ##se importa la funcion reporte_personas_activas
 from ..services.persona_service import reporte_personas_activas
@@ -30,8 +30,58 @@ from ..services.persona_service import reporte_personas_activas
 
 
 
-router = APIRouter(prefix="/personas", tags=["personas"])
+router = APIRouter(tags=["personas"])
 
+
+## Nueva ruta para poblar personas
+@router.post("/poblar", status_code=201)
+def poblar_personas(payload: poblarRequest, db: Session = Depends(get_db)):
+    total = populate_personas(db, payload.cantidad)
+    return {"message": f"{total} personas creadas exitosamente"}
+
+
+## Nueva ruta para resetear personas
+@router.delete("/reset")
+def borrar_todas_las_personas(db: Session = Depends(get_db)):
+    total = reset_personas(db)
+    return {
+        "mensaje": "Base de datos limpiada. Se eliminaron todos los registros.",
+        "total_eliminadas": total
+    }
+
+## Nueva ruta para obtener estadisticas por dominio
+@router.get("/estadisticas/dominios")
+def estadisticas_dominios(db: Session = Depends(get_db)):
+    """
+    Retorna estadísticas de personas por dominio de correo.
+    """
+    return estadisticas_por_dominio(db)
+
+
+## Nueva ruta para obtener estadisticas por edad
+@router.get("/estadisticas/edad")
+def estadisticas_por_edad(db: Session = Depends(get_db)):
+    """
+    Retorna estadísticas de edad calculadas desde birth_date.
+    """
+    return estadisticas_edad(db)
+
+
+##nueva ruta para buscar personas
+@router.get("/buscar/{termino}")
+def buscar_personas(termino: str, db: Session = Depends(get_db)):
+    return search_personas(db, termino)
+
+
+## Nueva ruta para reporte de personas activas 
+@router.get("/reporte/activos")
+def reporte_activos(
+    db: Session = Depends(get_db)
+):
+    """
+    Reporte de personas activas con proyección reducida.
+    """
+    return reporte_personas_activas(db)
 
 @router.post("", response_model=PersonaRead, status_code=status.HTTP_201_CREATED)
 def create_persona(persona_in: PersonaCreate, db: Session = Depends(get_db)):
@@ -63,14 +113,7 @@ def update_persona(persona_id: int, persona_in: PersonaUpdate, db: Session = Dep
 
 
 
-## Nueva ruta para resetear personas
-@router.delete("/reset")
-def borrar_todas_las_personas(db: Session = Depends(get_db)):
-    total = reset_personas(db)
-    return {
-        "mensaje": "Base de datos limpiada. Se eliminaron todos los registros.",
-        "total_eliminadas": total
-    }
+
 
 @router.delete("/{persona_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_persona(persona_id: int, db: Session = Depends(get_db)):
@@ -79,47 +122,6 @@ def delete_persona(persona_id: int, db: Session = Depends(get_db)):
     return None
 
 
-## Nueva ruta para poblar personas
-@router.post("/poblar", status_code=201)
-def poblar_personas(payload: poblarRequest, db: Session = Depends(get_db)):
-    total = populate_personas(db, payload.cantidad)
-    return {"message": f"{total} personas creadas exitosamente"}
-
-## Nueva ruta para obtener estadisticas por dominio
-@router.get("/estadisticas/dominios")
-def estadisticas_dominios(db: Session = Depends(get_db)):
-    """
-    Retorna estadísticas de personas por dominio de correo.
-    """
-    return estadisticas_por_dominio(db)
 
 
-## Nueva ruta para obtener estadisticas por edad
-@router.get("/estadisticas/edad")
-def estadisticas_por_edad(db: Session = Depends(get_db)):
-    """
-    Retorna estadísticas de edad calculadas desde birth_date.
-    """
-    return estadisticas_edad(db)
 
-
-##nueva ruta para buscar personas
-@router.get("/buscar/{termino}")
-def buscador_general(
-    termino: str,
-    db: Session = Depends(get_db)
-):
-    """
-    Busca personas por nombre, apellido o email.
-    """
-    return buscar_personas(db, termino)
-
-## Nueva ruta para reporte de personas activas 
-@router.get("/reporte/activos")
-def reporte_activos(
-    db: Session = Depends(get_db)
-):
-    """
-    Reporte de personas activas con proyección reducida.
-    """
-    return reporte_personas_activas(db)
