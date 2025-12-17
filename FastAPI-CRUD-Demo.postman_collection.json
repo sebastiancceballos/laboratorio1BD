@@ -77,3 +77,166 @@
     }
   ]
 }
+
+{
+	"info": {
+		"_postman_id": "a65979d3-fc97-4702-be46-97c58681e310",
+		"name": "FastAPI-CRUD-Demo.postman_collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50564049",
+		"_collection_link": "https://sebastian-cceballos-3668077.postman.co/workspace/SEBASTI%C3%81N-CARDONA-CEBALLOS's-Wo~4ff44db3-9263-4e58-8853-cb848b706dd9/collection/50564049-a65979d3-fc97-4702-be46-97c58681e310?action=share&source=collection_link&creator=50564049"
+	},
+	"item": [
+		{
+			"name": "Personas_poblar",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"cantidad\": 999\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/personas/poblar",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"personas",
+						"poblar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Personas_reset",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/personas/reset\n",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"personas",
+						"reset\n"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Personas_dominios",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/personas/estadisticas/dominios\n",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"personas",
+						"estadisticas",
+						"dominios\n"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Personas_edad",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/personas/estadisticas/edad",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"personas",
+						"estadisticas",
+						"edad"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Personas_buscar",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/personas/buscar/x\n",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"personas",
+						"buscar",
+						"x\n"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Personas_activas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/personas/reporte/activos\n",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"personas",
+						"reporte",
+						"activos\n"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
