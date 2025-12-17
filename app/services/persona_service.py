@@ -14,9 +14,13 @@ import random
 ## Se importa la libreria sqlalchemy text
 from sqlalchemy import text
 
-##se importa la libreria sqllchemy or, funcion Persona y libreria typing 
+##se importa la libreria sqllchemy or, funcion Persona 
 from sqlalchemy import or_
 from ..models.persona import Persona
+
+##se importan librerias list, dict y se importa persona 
+from typing import List, Dict
+from ..models.persona import Persona    
 
 
 
@@ -182,3 +186,29 @@ def buscar_personas(db: Session, termino: str) -> Sequence[Persona]:
         )
         .all()
     )
+
+## se agrega la funcion reporte personas_activas
+def reporte_personas_activas(db: Session) -> List[Dict]:
+    """
+    Retorna un reporte reducido de personas activas.
+    """
+    personas = (
+        db.query(
+            Persona.id,
+            Persona.email,
+            Persona.phone,
+            Persona.is_active
+        )
+        .filter(Persona.is_active.is_(True))
+        .all()
+    )
+
+    return [
+        {
+            "id": p.id,
+            "email": p.email,
+            "phone": p.phone,
+            "is_active": p.is_active
+        }
+        for p in personas
+    ]
