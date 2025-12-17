@@ -24,6 +24,10 @@ from ..services.persona_service import estadisticas_edad
 ##Se importa la funcion buscar_personas
 from ..services.persona_service import buscar_personas
 
+##se importa la funcion reporte_personas_activas
+from ..services.persona_service import reporte_personas_activas
+
+
 
 
 router = APIRouter(prefix="/personas", tags=["personas"])
@@ -109,3 +113,13 @@ def buscador_general(
     Busca personas por nombre, apellido o email.
     """
     return buscar_personas(db, termino)
+
+## Nueva ruta para reporte de personas activas 
+@router.get("/reporte/activos")
+def reporte_activos(
+    db: Session = Depends(get_db)
+):
+    """
+    Reporte de personas activas con proyección reducida.
+    """
+    return reporte_personas_activas(db)
