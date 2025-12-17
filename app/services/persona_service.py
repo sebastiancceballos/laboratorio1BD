@@ -15,12 +15,17 @@ import random
 from sqlalchemy import text
 
 ##se importa la libreria sqllchemy or, funcion Persona 
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 from ..models.persona import Persona
 
 ##se importan librerias list, dict y se importa persona 
 from typing import List, Dict
-from ..models.persona import Persona    
+ 
+
+
+
+
+
 
 
 
@@ -48,51 +53,6 @@ def create_persona(db: Session, payload: PersonaCreate) -> Persona:
     db.refresh(obj)
     return obj
 
-
-def list_personas(db: Session, skip: int = 0, limit: int = 100) -> Sequence[Persona]:
-    """Return paginated list of Personas."""
-    return db.query(Persona).offset(skip).limit(limit).all()
-
-
-def get_persona(db: Session, persona_id: int) -> Persona:
-    """Return Persona by ID or raise if not found."""
-    obj = db.query(Persona).filter(Persona.id == persona_id).first()
-    if not obj:
-        raise PersonaNotFoundError()
-    return obj
-
-
-def update_persona(db: Session, persona_id: int, payload: PersonaUpdate) -> Persona:
-    """Update Persona partially, enforcing unique email."""
-    obj = db.query(Persona).filter(Persona.id == persona_id).first()
-    if not obj:
-        raise PersonaNotFoundError()
-
-    data = payload.model_dump(exclude_unset=True)
-    if "email" in data and data["email"] != obj.email:
-        if db.query(Persona).filter(Persona.email == data["email"], Persona.id != persona_id).first():
-            raise EmailAlreadyExistsError()
-
-    for field, value in data.items():
-        setattr(obj, field, value)
-
-    db.add(obj)
-    try:
-        db.commit()
-    except IntegrityError as e:
-        db.rollback()
-        raise EmailAlreadyExistsError() from e
-    db.refresh(obj)
-    return obj
-
-
-def delete_persona(db: Session, persona_id: int) -> None:
-    """Delete Persona by ID or raise if not found."""
-    obj = db.query(Persona).filter(Persona.id == persona_id).first()
-    if not obj:
-        raise PersonaNotFoundError()
-    db.delete(obj)
-    db.commit()
 
 ## Funcion para poblar la base de datos con datos falsos
 faker=Faker("es_Co")
@@ -169,23 +129,21 @@ def estadisticas_edad(db: Session) -> dict:
 
 
 ## Nueva funcion para buscar personas por nombre, apellido o email
-def buscar_personas(db: Session, termino: str) -> Sequence[Persona]:
-    """
-    Busca personas por first_name, last_name o email.
-    """
-    patron = f"%{termino}%"
+def search_personas(db: Session, termino: str):
+    
+    
+    pattern = f"%{termino.lower().strip()}%"
 
     return (
-        db.query(Persona)
-        .filter(
-            or_(
-                Persona.first_name.ilike(patron),
-                Persona.last_name.ilike(patron),
-                Persona.email.ilike(patron),
-            )
-        )
-        .all()
+      db.query(Persona).filter(
+    or_(
+        Persona.first_name.like(pattern),
+        Persona.last_name.like(pattern),
+        Persona.email.like(pattern)
     )
+).all()
+    )
+   
 
 ## se agrega la funcion reporte personas_activas
 def reporte_personas_activas(db: Session) -> List[Dict]:
@@ -212,3 +170,50 @@ def reporte_personas_activas(db: Session) -> List[Dict]:
         }
         for p in personas
     ]
+
+
+def list_personas(db: Session, skip: int = 0, limit: int = 100) -> Sequence[Persona]:
+    """Return paginated list of Personas."""
+    return db.query(Persona).offset(skip).limit(limit).all()
+
+
+def get_persona(db: Session, persona_id: int) -> Persona:
+    """Return Persona by ID or raise if not found."""
+    obj = db.query(Persona).filter(Persona.id == persona_id).first()
+    if not obj:
+        raise PersonaNotFoundError()
+    return obj
+
+
+def update_persona(db: Session, persona_id: int, payload: PersonaUpdate) -> Persona:
+    """Update Persona partially, enforcing unique email."""
+    obj = db.query(Persona).filter(Persona.id == persona_id).first()
+    if not obj:
+        raise PersonaNotFoundError()
+
+    data = payload.model_dump(exclude_unset=True)
+    if "email" in data and data["email"] != obj.email:
+        if db.query(Persona).filter(Persona.email == data["email"], Persona.id != persona_id).first():
+            raise EmailAlreadyExistsError()
+
+    for field, value in data.items():
+        setattr(obj, field, value)
+
+    db.add(obj)
+    try:
+        db.commit()
+    except IntegrityError as e:
+        db.rollback()
+        raise EmailAlreadyExistsError() from e
+    db.refresh(obj)
+    return obj
+
+
+def delete_persona(db: Session, persona_id: int) -> None:
+    """Delete Persona by ID or raise if not found."""
+    obj = db.query(Persona).filter(Persona.id == persona_id).first()
+    if not obj:
+        raise PersonaNotFoundError()
+    db.delete(obj)
+    db.commit()
+
