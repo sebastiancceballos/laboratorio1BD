@@ -196,7 +196,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:8000/personas/buscar/x\n",
+					"raw": "http://127.0.0.1:8000/personas/buscar/santiago",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -208,7 +208,7 @@
 					"path": [
 						"personas",
 						"buscar",
-						"x\n"
+						"santiago"
 					]
 				}
 			},
