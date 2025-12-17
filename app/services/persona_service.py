@@ -17,7 +17,7 @@ from sqlalchemy import text
 ##se importa la libreria sqllchemy or, funcion Persona y libreria typing 
 from sqlalchemy import or_
 from ..models.persona import Persona
-from typing import Sequence
+
 
 
 def create_persona(db: Session, payload: PersonaCreate) -> Persona:
